@@ -5,7 +5,7 @@ require 'poltergeist/screenshot_overview/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "poltergeist-screenshot_overview"
-  spec.version       = "0.0.1"
+  spec.version       = "0.0.2"
   spec.authors       = ["Stefan Wienert"]
   spec.email         = ["stefan.wienert@pludoni.de"]
   spec.description   = %q{hooks into Capybara poltergeist to automatically make screenshots after each click}
@@ -19,7 +19,6 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_runtime_dependency "poltergeist"
-  spec.add_runtime_dependency "erb"
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"
 end
