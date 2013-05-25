@@ -1,3 +1,5 @@
+module Poltergeist
+end
 require "poltergeist/screenshot_overview/manager"
 module Poltergeist
   module ScreenshotOverview
