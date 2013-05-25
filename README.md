@@ -32,7 +32,7 @@ Run your feature specs. Every visit, click_button and click_link will create a s
 
 After test run, visit localhost:3000/cockpit/index.html in your browser to view the screenshots.
 
-NOTE: only feature specs with ``js: true`` will be run, to avoid problems with
+NOTE: only feature specs with ``js: true`` will be run, to avoid problems with non-capable drivers.
 
 ## Configuration
 
