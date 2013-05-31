@@ -64,11 +64,10 @@ module Poltergeist::ScreenshotOverview
     # adds image_path and metadata to our list, returns a full path where the
     # Engine should put the screenshot in
     def add_image_from_rspec(argument, example, url_path)
-      filename = [example.description, argument, Digest::MD5.hexdigest("foo")[0..6] ].join(" ").gsub(/\W+/,"_") + ".jpg"
-
       blob = caller.find{|i| i[ example.file_path.gsub(/:\d*|^\./,"") ]}
       file_with_line = blob.split(":")[0,2].join(":")
 
+      filename = [example.description, argument, file_with_line, SecureRandom.hex(6) ].join(" ").gsub(/\W+/,"_") + ".jpg"
       full_name = File.join(Poltergeist::ScreenshotOverview.target_directory, filename )
       FileUtils.mkdir_p Poltergeist::ScreenshotOverview.target_directory
       describe = example.metadata[:example_group][:description_args]
@@ -96,7 +95,7 @@ module Poltergeist::ScreenshotOverview
     def groups
       @files.
         group_by{ |screenshot| screenshot.test_file}.
-        map{|file,screenshots| ScreenshotGroup.new(file,screenshots) }
+        map{|file,screenshots| ScreenshotGroup.new(file,screenshots.sort_by{|s| s.file_with_line }) }
     end
 
   end
