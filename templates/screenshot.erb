@@ -1,13 +1,12 @@
 <div class='screenshot'>
   <img src='<%= local_image %>' alt=''/>
-
   <ul>
     <li>
-  <strong><%= describe_descriptions.join(" >> ") %>:
-    <%= example_description %></strong>
+    <strong><%= group_description.join(" >> ") %> <%= example_description %></strong>
   </li>
-  <li>on <%= url %></li>
-  <li>in <%= test_file %></li>
-  <li>clicked on /visited: "<%= argument %>"</li>
+  <li>URL: <code><%= url %></code></li>
+  <li>clicked on: <code><%= argument %></code></li>
+  <li><a href='file://<%= file_with_line %>'><%= file_with_line %></a></li>
+  <code><pre><%= snippet %></pre></code>
 </table>
 </div>

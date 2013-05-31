@@ -1,6 +1,56 @@
 require "erb"
 require "ostruct"
 module Poltergeist::ScreenshotOverview
+  class ScreenshotGroup
+    attr_accessor :screenshots, :file_name
+
+    def initialize(file,screenshots)
+      @file_name = file
+      @screenshots = screenshots
+    end
+
+    def to_id
+      file_name.gsub(/\W+/, "-").gsub(/^-/, "")
+    end
+  end
+
+  class Screenshot
+    ATTR = :url, :argument, :local_image, :full_path, :group_description, :example_description, :file_with_line
+    attr_accessor(*ATTR)
+    def initialize(opts={})
+      opts.each do |k,v|
+        self.send("#{k}=", v)
+      end
+    end
+
+    def to_hash
+      Hash[
+        ATTR.map{|k|[k, self.send(k)]}
+      ]
+    end
+
+    def line_number
+      file_with_line.split(":")[1].to_i rescue 0
+    end
+
+    def full_test_path
+      file_with_line.split(":")[0]
+    end
+
+    def snippet
+      File.read(full_test_path).lines[ line_number - 3, 5].join
+    end
+
+    def test_file
+      full_test_path.gsub(Dir.pwd, "").gsub("spec/features/","")
+    end
+
+    def render
+      template = ERB.new File.read(Poltergeist::ScreenshotOverview.template), nil, "%"
+      template.result(binding)
+    end
+  end
+
   class Manager
     include Singleton
 
@@ -16,23 +66,26 @@ module Poltergeist::ScreenshotOverview
     def add_image_from_rspec(argument, example, url_path)
       filename = [example.description, argument, Digest::MD5.hexdigest("foo")[0..6] ].join(" ").gsub(/\W+/,"_") + ".jpg"
 
+      blob = caller.find{|i| i[ example.file_path.gsub(/:\d*|^\./,"") ]}
+      file_with_line = blob.split(":")[0,2].join(":")
+
       full_name = File.join(Poltergeist::ScreenshotOverview.target_directory, filename )
       FileUtils.mkdir_p Poltergeist::ScreenshotOverview.target_directory
       describe = example.metadata[:example_group][:description_args]
-      @files << {
-        :url => url_path,
-        :argument => argument,
-        :local_image => filename,
-        :full_path => full_name,
-        :test_file => example.file_path,
-        :describe_descriptions => describe,
-        :example_description => example.description
-      }
+      @files << Screenshot.new({
+        :url                 => url_path,
+        :argument            => argument,
+        :local_image         => filename,
+        :full_path           => full_name,
+        :group_description   => describe,
+        :example_description => example.description,
+        :file_with_line      => file_with_line
+      })
       full_name
     end
 
     def generate_html
-      title = "Screenshot Overview (#{Time.now.to_s})"
+      title = title = "Screenshot Overview (#{Time.now.to_s})"
       template = ERB.new File.new(Poltergeist::ScreenshotOverview.layout).read, nil, "%"
       html = template.result(binding)
       File.open( File.join(Poltergeist::ScreenshotOverview.target_directory, "index.html"), "w+") { |f|
@@ -40,12 +93,10 @@ module Poltergeist::ScreenshotOverview
     end
 
 
-    def rendered_screenshots
-      template = ERB.new File.read(Poltergeist::ScreenshotOverview.template), nil, "%"
-      @files.map do |file|
-        namespace = OpenStruct.new(file)
-        template.result(namespace.instance_eval { binding })
-      end.join
+    def groups
+      @files.
+        group_by{ |screenshot| screenshot.test_file}.
+        map{|file,screenshots| ScreenshotGroup.new(file,screenshots) }
     end
 
   end

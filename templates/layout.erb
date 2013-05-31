@@ -3,6 +3,7 @@
     <title><%= title %></title>
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width">
+<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
 
 <style type='text/css'>
   .screenshot {
@@ -16,17 +17,64 @@
     padding: 0 20px;
     font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
   }
-</style
+  #toc {
+    width: 200px;
+    background-color: #FFFFFF;
+    border-radius: 6px 6px 6px 6px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.067);
+    margin: 30px 0 0;
+    padding: 0;
+  }
+  #toc a {
+    border: 1px solid #E5E5E5;
+    display: block;
+    margin: 0 0 -1px;
+    padding: 8px 14px;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  }
+</style>
+
+<script type='text/javascript'>
+  url = window.location.toString();
+  console.log(url)
+  if (!/\/$/.test(url)) {
+      url = url + '/';
+      console.log("CHANGING" + url)
+      window.location = url
+  }
+</script>
 
 </head>
 
-<body>
+<body data-spy="scroll" data-target=".navbar">
 
-<div id='container'>
-  <h1><%= title %></h1>
+  <div id='container' class='row'>
+    <div class='span10'>
+      <h1><%= title %></h1>
+      <% groups.each do |group| %>
+        <div class='group'>
+          <h2 id='<%=group.to_id%>'><%= group.file_name %></h2>
+          <% group.screenshots.each do |screenshot| %>
+            <%= screenshot.render %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
 
-<%= rendered_screenshots %>
-</div>
+    <div class='span2'>
+      <div class='navbar' id='toc' data-spy="affix" data-offset-top="200">
+        <ul class='nav nav-list'>
+          <% groups.each do |group| %>
+            <li>
+            <a href='#<%=group.to_id %>'><%= group.file_name %></a>
+            </li>
+          <% end %>
+      </div>
+    </div>
+  </div>
 
+<script src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
+<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
 </body>
 </html>
