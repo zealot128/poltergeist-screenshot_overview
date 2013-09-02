@@ -38,6 +38,11 @@ module Poltergeist
       make_screenshot(args.first)
     end
 
+    def click_on(*args)
+      super
+      make_screenshot(args.first)
+    end
+
     private
 
     def make_screenshot(argument)
