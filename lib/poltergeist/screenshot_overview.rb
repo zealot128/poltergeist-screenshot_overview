@@ -46,8 +46,9 @@ module Poltergeist
     private
 
     def make_screenshot(argument)
-      if self.example.metadata[:js] || self.example.metadata[:screenshot]
-        filename = Manager.instance.add_image_from_rspec(argument, self.example, current_path)
+      ex = RSpec.current_example
+      if ex.metadata[:js] || ex.metadata[:screenshot]
+        filename = Manager.instance.add_image_from_rspec(argument, ex, current_path)
         page.driver.render(Rails.root.join(filename).to_s,full: true)
       end
     end
