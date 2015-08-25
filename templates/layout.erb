@@ -1,79 +1,90 @@
 <!DOCTYPE html>
 <html class="no-js"> <head> <meta charset="utf-8"> <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title><%= title %></title>
-<meta name="description" content="">
-<meta name="viewport" content="width=device-width">
-<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
 
-<style type='text/css'>
-  .screenshot {
-    margin-bottom: 15px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid #aaa;
-  }
-  #container {
-    width: 80%;
-    margin: 0 auto;
-    padding: 0 20px;
-    font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
-  }
-  #toc {
-    width: 200px;
-    background-color: #FFFFFF;
-    border-radius: 6px 6px 6px 6px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.067);
-    margin: 30px 0 0;
-    padding: 0;
-  }
-  #toc a {
-    border: 1px solid #E5E5E5;
-    display: block;
-    margin: 0 0 -1px;
-    padding: 8px 14px;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
-  }
-</style>
+    <style type='text/css'>
+      .screenshot {
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #aaa;
+        vertical-align: top;
+        display: inline-block;
+      }
+      #container {
+        width: 80%;
+        margin: 0 auto;
+        padding: 0 20px;
+        font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
+      }
+      #toc {
+        width: 200px;
+        background-color: #FFFFFF;
+        border-radius: 6px 6px 6px 6px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.067);
+        margin: 30px 0 0;
+        padding: 0;
+      }
+      #toc a {
+        border: 1px solid #E5E5E5;
+        display: block;
+        margin: 0 0 -1px;
+        padding: 8px 14px;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+      }
+    </style>
 
-<script type='text/javascript'>
-  //url = window.location.toString();
-  //console.log(url)
-  //if (!/\/$/.test(url)) {
-  //    url = url + '/';
-  //    window.location = url
-  //}
-</script>
+    <script type='text/javascript'>
+      //url = window.location.toString();
+    //console.log(url)
+    //if (!/\/$/.test(url)) {
+    //    url = url + '/';
+    //    window.location = url
+    //}
+  </script>
 
 </head>
 
 <body data-spy="scroll" data-target=".navbar">
+  <div class='container-fluid'>
 
-  <div id='container' class='row'>
-    <div class='span10'>
-      <h1><%= title %></h1>
-      <% groups.each do |group| %>
-        <div class='group'>
-          <h2 id='<%=group.to_id%>'><%= group.file_name %></h2>
-          <% group.screenshots.each do |screenshot| %>
-            <%= screenshot.render %>
-          <% end %>
+    <div id='container' class='row'>
+      <div class='col-sm-8 col-lg-10'>
+        <h1><%= title %></h1>
+        <% example_files.each do |file| %>
+          <div class='group'>
+            <h2 id='<%=file.to_id%>'><%= file.file_name %></h2>
+            <% file.examples.each do |example| %>
+              <h4><%= example.title %></h4>
+              <% example.screenshots.each do |screenshot| %>
+                <%= screenshot.render %>
+              <% end %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+
+      <div class='col-sm-4 col-lg-2'>
+        <div class='navbar' id='toc' data-spy="affix" data-offset-top="200">
+          <ul class='nav nav-list'>
+            <% example_files.each do |group| %>
+              <li>
+                <a href='#<%=group.to_id %>'><%= group.file_name %></a>
+              </li>
+            <% end %>
+          </div>
         </div>
-      <% end %>
-    </div>
-
-    <div class='span2'>
-      <div class='navbar' id='toc' data-spy="affix" data-offset-top="200">
-        <ul class='nav nav-list'>
-          <% groups.each do |group| %>
-            <li>
-            <a href='#<%=group.to_id %>'><%= group.file_name %></a>
-            </li>
-          <% end %>
       </div>
     </div>
-  </div>
 
-<script src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
-<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
-</body>
+    <script src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
+    <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script type='application/javascript' src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js'></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+  </body>
 </html>

@@ -20,39 +20,5 @@ module Poltergeist
       end
     end
 
-    # @override
-    def visit(*args)
-      super
-      make_screenshot(args.first)
-    end
-
-    # @override
-    def click_button(*args)
-      super
-      make_screenshot(args.first)
-    end
-
-    # @override
-    def click_link(*args)
-      super
-      make_screenshot(args.first)
-    end
-
-    def click_on(*args)
-      super
-      make_screenshot(args.first)
-    end
-
-    private
-
-    def make_screenshot(argument)
-      return if !defined?(RSpec.current_example)
-      ex = RSpec.current_example
-      if ex && (ex.metadata[:js] || ex.metadata[:screenshot])
-        filename = Manager.instance.add_image_from_rspec(argument, ex, current_path)
-        page.driver.render(Rails.root.join(filename).to_s,full: true)
-      end
-    end
-
   end
 end

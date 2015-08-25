@@ -1,7 +1,7 @@
 require "erb"
 require "ostruct"
 module Poltergeist::ScreenshotOverview
-  class ScreenshotGroup
+  class ExampleFile
     attr_accessor :screenshots, :file_name
 
     def initialize(file,screenshots)
@@ -12,6 +12,24 @@ module Poltergeist::ScreenshotOverview
     def to_id
       file_name.gsub(/\W+/, "-").gsub(/^-/, "")
     end
+
+    def examples
+      screenshots.group_by{|i| i.example_description }.map do |_,screenshots|
+        Example.new(screenshots)
+      end
+    end
+  end
+
+  class Example
+    attr_accessor :screenshots
+    def initialize(screenshots)
+      @screenshots = screenshots
+    end
+
+    def title
+      (screenshots.first.group_description + [screenshots.first.example_description]).join(' >> ')
+    end
+
   end
 
   class Screenshot
@@ -38,11 +56,11 @@ module Poltergeist::ScreenshotOverview
     end
 
     def snippet
-      File.read(full_test_path).lines[ line_number - 3, 5].join
+      File.read(full_test_path).lines[ line_number - 5, 9].tap{|i| i[4] = ">>" + i[4].gsub(/^  /,'')}.join
     end
 
     def test_file
-      full_test_path.gsub(Dir.pwd, "").gsub("spec/features/","")
+      file_with_line.gsub(Dir.pwd, '').gsub(/:\d+$/,'')
     end
 
     def render
@@ -92,10 +110,11 @@ module Poltergeist::ScreenshotOverview
     end
 
 
-    def groups
-      @files.
+    def example_files
+      @example_files ||=
+        @files.
         group_by{ |screenshot| screenshot.test_file}.
-        map{|file,screenshots| ScreenshotGroup.new(file,screenshots.sort_by{|s| s.file_with_line }) }
+        map{|file,screenshots| ExampleFile.new(file,screenshots.sort_by{|s| s.file_with_line }) }
     end
 
   end

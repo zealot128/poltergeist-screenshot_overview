@@ -1,12 +1,24 @@
 <div class='screenshot'>
-  <img src='<%= local_image %>' alt=''/>
-  <ul>
-    <li>
-    <strong><%= group_description.join(" >> ") %> <%= example_description %></strong>
-  </li>
-  <li>URL: <code><%= url %></code></li>
-  <li>clicked on: <code><%= argument %></code></li>
-  <li><a href='file://<%= file_with_line %>'><%= file_with_line %></a></li>
-  <code><pre><%= snippet %></pre></code>
-</table>
+  <% id = 'modal' + Digest::MD5.hexdigest(file_with_line) %>
+  <a href='#<%=id%>' data-toggle='modal'>
+    <img src='<%= local_image %>' alt='' style='width: 100px'/>
+  </a>
+
+  <div class="modal fade" id='<%=id%>'>
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h3 class='modal-title'><%= group_description.join(" >> ") %> <%= example_description %></h3>
+        </div>
+        <div class="modal-body">
+          <p>URL: <code><%= url %></code></p>
+          <p>clicked on: <code><%= argument %></code></p>
+          <p><a href='file://<%= file_with_line %>'><%= file_with_line %></a></p>
+          <pre><code lang='ruby' class='ruby'><%= snippet %></code></pre>
+          <img src='<%= local_image %>' alt='' class='img-responsive'/>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
