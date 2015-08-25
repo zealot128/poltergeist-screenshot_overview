@@ -23,7 +23,7 @@ module Poltergeist::ScreenshotOverview
   class Example
     attr_accessor :screenshots
     def initialize(screenshots)
-      @screenshots = screenshots
+      @screenshots = screenshots.sort_by{|i| i.file_with_line }
     end
 
     def title
