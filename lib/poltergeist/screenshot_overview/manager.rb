@@ -73,6 +73,7 @@ module Poltergeist::ScreenshotOverview
     include Singleton
 
     def start
+      FileUtils.mkdir_p Poltergeist::ScreenshotOverview.target_directory
       Dir[File.join Poltergeist::ScreenshotOverview.target_directory, "*jpg"].each do |file|
         File.unlink file
       end
